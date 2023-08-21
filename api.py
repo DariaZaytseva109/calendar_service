@@ -2,12 +2,16 @@ from flask import Flask, request
 from datetime import datetime
 
 import model
+import storage
 
 app = Flask(__name__)
 
 
 API_ROOT = '/api/v1'
 EVENT_API_ROOT = API_ROOT + '/event'
+
+
+my_storage = storage.Local_Storage()
 
 
 class API_exeption(Exception):
@@ -22,32 +26,39 @@ def from_raw_to_event(raw_event: str) -> model.Event:   #форматирова�
         title = event_list_data[1]
         text = event_list_data[2]
         event = model.Event(event_id, day, title, text)
-
         return event
     except Exception:
         raise API_exeption('Неверный формат ввода данных')
 
 
-def to_raw(event: model.Event) -> str:
+def to_raw(event: model.Event) -> str:    #форматирование в raw данные
     return f'{event.day.strftime("%Y-%m-%d")}|{event.title}|{event.text}'
 
 
 @app.route(EVENT_API_ROOT + '/', methods=['POST'])
 def create():
     data = request.get_data().decode('utf-8')
-    event = from_raw_to_event(data)
+    event = from_raw_to_event(data)     #экземпляр класса Event
+    my_storage.create(event)
     return f'Создано новое событие: {event.title}. Дата: {event.day.strftime("%Y-%m-%d")}'
-
 
 
 @app.route(EVENT_API_ROOT + '/', methods=['GET'])
 def list():
-    return 'list'
+    try:
+        raw = ''
+        for elem in my_storage.list():
+            raw += to_raw(elem) + '\n'
+        return raw
+    except:
+        return 'failed to list'
 
 
 
 @app.route(EVENT_API_ROOT + '/<id>/', methods=['GET'])
-def read(id):
+def read(id: int):
+    
+
     return 'read'
 
 
