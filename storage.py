@@ -12,7 +12,7 @@ class Local_Storage:
 
     def create(self, event: model.Event):
         try:
-            self.storage[event.day] = event
+            self.storage[event.event_id] = event
         except Exception:
             raise Storage_Exception('Failed to create an event')
 
@@ -20,22 +20,22 @@ class Local_Storage:
         try:
             return self.storage.values()
         except Exception:
-            raise Storage_Exception('Failed to store an event')
+            raise Storage_Exception('Failed list events')
 
-    def read(self, day: str):     #дата в формате ГГГГ-ММ-ДД
+    def read(self, event_id: str):
         try:
-            return self.storage[datetime.strptime(day, "%Y-%m-%d")]
+            return self.storage[event_id]
         except Exception:
             raise Storage_Exception('Event not found')
 
-    def update(self, day: str, event: model.Event):
+    def update(self, event_id: str, event: model.Event):
         try:
-            self.storage[datetime.strptime(day, "%Y-%m-%d")] = event
+            self.storage[event_id] = event
         except Exception:
             raise Storage_Exception('Failed to update')
 
-    def delete(self, day: str):
+    def delete(self, event_id: str):
         try:
-            del self.storage[datetime.strptime(day, "%Y-%m-%d")]
+            del self.storage[event_id]
         except Exception:
             raise Storage_Exception('Failed to delete')
