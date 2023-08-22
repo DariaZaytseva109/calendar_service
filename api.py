@@ -28,7 +28,7 @@ def from_raw_to_event(raw_event: str) -> model.Event:   #форматирова�
         event = model.Event(event_id, day, title, text)
         return event
     except Exception as ex:
-        return 'Неверный формат ввода данных'
+        raise API_exeption('Неверный формат ввода данных')
 
 
 def to_raw(event: model.Event) -> str:    #форматирование в raw данные
@@ -43,7 +43,7 @@ def create():
         my_storage.create(event)
         return f'New event created: {event.title}. Date: {event.day.strftime("%Y-%m-%d")}. id: {event.event_id}'
     except Exception as ex:
-        return f'Faileddd: {ex}'
+        return f'Failed: {ex}'
 
 @app.route(EVENT_API_ROOT + '/', methods=['GET'])
 def list():
@@ -53,7 +53,7 @@ def list():
             raw += to_raw(elem) + '\n'
         return raw
     except:
-        return API_exeption(f'Failed: {ex}')
+        return f'Failed: {ex}'
 
 
 
@@ -63,7 +63,7 @@ def read(event_id: str):
         result = my_storage.read(event_id)
         return to_raw(result)
     except Exception as ex:
-        return API_exeption(f'Failed: {ex}')
+        return f'Failed: {ex}'
 
 
 @app.route(EVENT_API_ROOT + '/<event_id>/', methods=['PUT'])
@@ -74,7 +74,7 @@ def update(event_id: str):
         my_storage.update(event_id, event)
         return f'Event id: {event_id} updated'
     except Exception as ex:
-        return API_exeption(f'Failed: {ex}')
+        return f'Failed: {ex}'
 
 
 
@@ -84,7 +84,7 @@ def delete(event_id: str):
         my_storage.delete(event_id)
         return f'Event id:{event_id} deleted'
     except Exception as ex:
-        return API_exeption(f'Failed: {ex}')
+        return f'Failed: {ex}'
 
 
 

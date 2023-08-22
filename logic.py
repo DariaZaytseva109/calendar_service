@@ -15,7 +15,7 @@ class Event_logic:
         self.db = db.DB()
 
 
-    def check_logic(self, event: model.Event):
+    def check_logic_create(self, event: model.Event):
         if len(event.title) > TITLE_LIMIT:
             raise Logic_Exception(f'Title length > max: {TITLE_LIMIT}')
         elif len(event.text) > TEXT_LIMIT:
@@ -23,8 +23,14 @@ class Event_logic:
         elif event.event_id in self.db.storage.storage.keys():
             raise Logic_Exception(f'You can add only one event for one day')
 
+    def check_logic_update(self, event: model.Event):
+        if len(event.title) > TITLE_LIMIT:
+            raise Logic_Exception(f'Title length > max: {TITLE_LIMIT}')
+        elif len(event.text) > TEXT_LIMIT:
+            raise Logic_Exception(f'Text length > max: {TEXT_LIMIT}')
+
     def create(self, event: model.Event):
-        self.check_logic(event)
+        self.check_logic_create(event)
         try:
             self.db.create(event)
         except Exception as ex:
@@ -46,11 +52,11 @@ class Event_logic:
 
 
     def update(self, event_id: str, event: model.Event):
+        self.check_logic_update(event)
         try:
-            self.check_logic(event)
             self.db.update(event_id, event)
         except Exception as ex:
-            return Logic_Exception(f'Failed: {ex}')
+            return f'Failed: {ex}'
 
 
     def delete(self, event_id: str):
