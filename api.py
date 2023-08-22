@@ -2,7 +2,7 @@ from flask import Flask, request
 from datetime import datetime
 
 import model
-import db
+import logic
 
 app = Flask(__name__)
 
@@ -11,7 +11,7 @@ API_ROOT = '/api/v1'
 EVENT_API_ROOT = API_ROOT + '/event'
 
 
-my_storage = db.DB()
+my_storage = logic.Event_logic()
 
 
 class API_exeption(Exception):
@@ -21,14 +21,14 @@ class API_exeption(Exception):
 def from_raw_to_event(raw_event: str) -> model.Event:   #форматирование из строки (self, id: int, day: datetime, title: str, text: str):
     try:
         event_list_data = raw_event.split('|')
-        event_id = event_list_data[0].replace('-', '')
+        event_id = event_list_data[0].replace('-', '')  #т.к. в ТЗ ограничение - одно событие в день, id формирую из даты события (уникален у каждого события)
         day = datetime.strptime(event_list_data[0], '%Y-%m-%d')
         title = event_list_data[1]
         text = event_list_data[2]
         event = model.Event(event_id, day, title, text)
         return event
-    except Exception:
-        raise API_exeption('Неверный формат ввода данных')
+    except Exception as ex:
+        return 'Неверный формат ввода данных'
 
 
 def to_raw(event: model.Event) -> str:    #форматирование в raw данные
@@ -43,7 +43,7 @@ def create():
         my_storage.create(event)
         return f'New event created: {event.title}. Date: {event.day.strftime("%Y-%m-%d")}. id: {event.event_id}'
     except Exception as ex:
-        raise API_exeption(f'Failed: {ex}')
+        return f'Faileddd: {ex}'
 
 @app.route(EVENT_API_ROOT + '/', methods=['GET'])
 def list():
@@ -53,7 +53,7 @@ def list():
             raw += to_raw(elem) + '\n'
         return raw
     except:
-        raise API_exeption(f'Failed: {ex}')
+        return API_exeption(f'Failed: {ex}')
 
 
 
@@ -63,7 +63,7 @@ def read(event_id: str):
         result = my_storage.read(event_id)
         return to_raw(result)
     except Exception as ex:
-        raise API_exeption(f'Failed: {ex}')
+        return API_exeption(f'Failed: {ex}')
 
 
 @app.route(EVENT_API_ROOT + '/<event_id>/', methods=['PUT'])
@@ -74,7 +74,7 @@ def update(event_id: str):
         my_storage.update(event_id, event)
         return f'Event id: {event_id} updated'
     except Exception as ex:
-        raise API_exeption(f'Failed: {ex}')
+        return API_exeption(f'Failed: {ex}')
 
 
 
@@ -84,7 +84,7 @@ def delete(event_id: str):
         my_storage.delete(event_id)
         return f'Event id:{event_id} deleted'
     except Exception as ex:
-        raise API_exeption(f'Failed: {ex}')
+        return API_exeption(f'Failed: {ex}')
 
 
 
