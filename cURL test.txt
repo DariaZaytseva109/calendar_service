@@ -1,0 +1,54 @@
+### добавление нового события
+
+curl http://127.0.0.1:5000/api/v1/event/ -X POST -d "2020-05-30|title1|text1"
+New event created: title1. Date: 2020-05-30. id: 20200530
+
+curl http://127.0.0.1:5000/api/v1/event/ -X POST -d "2021-01-01|title2|text2"
+New event created: title2. Date: 2021-01-01. id: 20210101
+
+curl http://127.0.0.1:5000/api/v1/event/ -X POST -d "2021-01-01|title3|text3"
+Failed: You can add only one event for one day
+
+curl http://127.0.0.1:5000/api/v1/event/ -X POST -d "2019-01-01|title2toooooooolooooooooooooooooooooooooooooooooooooooooooong|text2"
+Failed: Title length > max: 30
+
+curl http://127.0.0.1:5000/api/v1/event/ -X POST -d "2021-10-12|title4|texttoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooloooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong"
+Failed: Text length > max: 200
+
+### получение всего списка событий
+
+curl http://127.0.0.1:5000/api/v1/event/
+2020-05-30|title1|text1
+2021-01-01|title2|text2
+
+### получение события по идентификатору / ID == 20200530
+
+curl http://127.0.0.1:5000/api/v1/event/20200530/
+2020-05-30|title1|text1
+
+### обновление текста события по идентификатору / ID == 20200530 /  новый текст == "текст1updated"
+
+curl http://127.0.0.1:5000/api/v1/event/20200530/ -X PUT -d "2020-05-30|title1|text1updated "
+Event id: 20200530 updated
+
+### получение обновленного события по идентификатору / ID == 20200530
+
+curl http://127.0.0.1:5000/api/v1/event/20200530/
+2020-05-30|title1|text1updated
+
+### получение всего списка событий
+
+curl http://127.0.0.1:5000/api/v1/event/
+
+2020-05-30|title1|text1updated
+2021-01-01|title2|text2
+
+### удаление события по идентификатору / ID == 20200530
+ 
+curl http://127.0.0.1:5000/api/v1/event/20200530/  -X DELETE
+Event id:20200530 deleted
+
+### получение всего списка событий
+
+curl http://127.0.0.1:5000/api/v1/event/
+2021-01-01|title2|text2
