@@ -2,7 +2,7 @@ from flask import Flask, request
 from datetime import datetime
 
 import model
-import storage
+import db
 
 app = Flask(__name__)
 
@@ -11,7 +11,7 @@ API_ROOT = '/api/v1'
 EVENT_API_ROOT = API_ROOT + '/event'
 
 
-my_storage = storage.Local_Storage()
+my_storage = db.DB()
 
 
 class API_exeption(Exception):

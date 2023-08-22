@@ -1,5 +1,4 @@
 import model
-from datetime import datetime
 
 
 
@@ -39,3 +38,4 @@ class Local_Storage:
             del self.storage[event_id]
         except Exception:
             raise Storage_Exception('Failed to delete')
+        
