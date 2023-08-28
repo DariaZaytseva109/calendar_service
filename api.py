@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 from datetime import datetime
 
 import model
@@ -33,6 +33,18 @@ def from_raw_to_event(raw_event: str) -> model.Event:   #форматирова�
 
 def to_raw(event: model.Event) -> str:    #форматирование в raw данные
     return f'{event.day.strftime("%Y-%m-%d")}|{event.title}|{event.text}'
+
+
+
+@app.route(API_ROOT + '/')
+def main():
+    return render_template('main.html')
+
+
+@app.route(API_ROOT + '/about/')
+def about():
+    return render_template('about.html')
+
 
 
 @app.route(EVENT_API_ROOT + '/', methods=['POST'])
