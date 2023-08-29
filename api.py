@@ -1,11 +1,12 @@
 from flask import Flask, request, render_template
 from datetime import datetime
+from flask_sqlalchemy import SQLAlchemy
 
 import model
 import logic
 
 app = Flask(__name__)
-
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'
 
 API_ROOT = '/api/v1'
 EVENT_API_ROOT = API_ROOT + '/event'
@@ -64,7 +65,7 @@ def list():
         for elem in my_storage.list():
             raw += to_raw(elem) + '\n'
         return raw
-    except:
+    except Exception as ex:
         return f'Failed: {ex}'
 
 
